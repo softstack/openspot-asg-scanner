@@ -6,9 +6,9 @@ def ensure(asg):
     machines = instance.get_instances(*instances_ids)
     for machine in machines:
         if instance.is_ondemand(machine):
-            spot_request = spot.get_spot_request(instance['InstanceId'])
+            spot_request = spot.get_spot_request(machine['InstanceId'])
             if not spot_request:
-                spot.create_spot_request(instance)
+                spot.create_spot_request(machine)
                 continue
             if spot.request_is_active(spot_request):
                 spot_machines = instance.get_instances(spot_request['InstanceId'])
@@ -19,9 +19,11 @@ def ensure(asg):
                             spot_request['InstanceId'],
                             asg['AutoScalingGroupName']
                         )
-                        instance.terminate_instance(instance['InstanceId'])
-                else:
-                    spot.cancel_spot_request(spot_request['SpotInstanceRequestId'])
+                        instance.terminate_instance(machine['InstanceId'])
+                    else:
+                        continue
+
+            spot.cancel_spot_request(spot_request['SpotInstanceRequestId'])
 
 
 def scan(event, context):

@@ -54,6 +54,11 @@ def get_spot_request(origin_instance_id):
 
     requests = response['SpotInstanceRequests']
 
+    requests = list(filter(
+        lambda request: request['State'] == 'active' or request['State'] == 'pending',
+        requests
+    ))
+
     return requests[0] if len(requests) else None
 
 
