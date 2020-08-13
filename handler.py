@@ -7,4 +7,4 @@ asg_client = boto3.client('asg')
 
 
 def scan(event, context):
-    teste.chama()
+    pass
