@@ -1,6 +1,6 @@
 import boto3
 
-client = boto3.client('asg')
+client = boto3.client('autoscaling')
 
 
 def change_instances(ondemand_instance_id, spot_instance_id, asg_name):
