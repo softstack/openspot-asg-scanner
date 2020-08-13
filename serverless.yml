@@ -13,7 +13,7 @@ provider:
       Resource: "*"
 
 functions:
-  hello:
+  scan:
     handler: handler.scan
 
 custom:
