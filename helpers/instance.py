@@ -1,7 +1,10 @@
+import boto3
 from functools import reduce
 
+client = boto3.client('ec2')
 
-def terminate_instance(client, instance_id):
+
+def terminate_instance(instance_id):
     response = client.terminate_instances(
         InstanceIds=[instance_id]
     )
@@ -9,7 +12,15 @@ def terminate_instance(client, instance_id):
     return response
 
 
-def get_instances(client, *ids):
+def is_running(instance):
+    return instance['State']['Name'] == 'running'
+
+
+def is_ondemand(instance):
+    return not instance.get('InstanceLifecycle', None)
+
+
+def get_instances(*ids):
     response = client.describe_instances(
         InstanceIds=ids
     )

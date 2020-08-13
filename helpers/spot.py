@@ -1,8 +1,10 @@
+import boto3
 
+client = boto3.client('ec2')
 INSTANCE_ORIGIN_TAG = 'openspot-instance-origin'
 
 
-def create_spot_request(client, instance):
+def create_spot_request(instance):
     security_groups_ids = [
         security_group['GroupId'] for security_group in instance['SecurityGroups']
     ]
@@ -40,7 +42,7 @@ def create_spot_request(client, instance):
     return response
 
 
-def get_spot_request(client, origin_instance_id):
+def get_spot_request(origin_instance_id):
     response = client.describe_spot_instance_requests(
         Filters=[
             {
@@ -55,8 +57,12 @@ def get_spot_request(client, origin_instance_id):
     return requests[0] if len(requests) else None
 
 
-def cancel_spot_request(client, spot_request_id):
+def cancel_spot_request(spot_request_id):
     response = client.cancel_spot_instance_requests(
         SpotInstanceRequestIds=[spot_request_id]
     )
     return response
+
+
+def request_is_active(spot_request):
+    return spot_request['State'] == 'active'
