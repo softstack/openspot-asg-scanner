@@ -20,6 +20,8 @@ provider:
 functions:
   scan:
     handler: handler.scan
+    events:
+      - schedule: rate(1 minute)
 
 custom:
   pythonRequirements:
