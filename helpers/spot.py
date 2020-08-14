@@ -4,7 +4,7 @@ client = boto3.client('ec2')
 INSTANCE_ORIGIN_TAG = 'openspot-instance-origin'
 
 
-def create_spot_request(instance):
+def create_spot_request(instance, instance_type):
     security_groups_ids = [
         security_group['GroupId'] for security_group in instance['SecurityGroups']
     ]
@@ -13,7 +13,7 @@ def create_spot_request(instance):
        InstanceCount=1,
        LaunchSpecification={
            "ImageId": instance['ImageId'],
-           "InstanceType": instance['InstanceType'],
+           "InstanceType": instance_type,
            "Monitoring": {
                'Enabled': True if instance['Monitoring'] == 'enabled' else False,
            },
@@ -71,3 +71,8 @@ def cancel_spot_request(spot_request_id):
 
 def request_is_active(spot_request):
     return spot_request['State'] == 'active'
+
+
+def select_instance_types(machines):
+    return ['t3.medium', 't2.micro']
+
